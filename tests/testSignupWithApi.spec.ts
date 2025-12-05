@@ -1,6 +1,7 @@
 import { test, expect, request } from "@playwright/test";
 import { CreateAccountApi } from "../api/CreateAccountApi";
 import { VerifyLoginApi } from "../api/VerifyLoginApi";
+import { signupSchema, verifyLoginSchema } from "../api-schema/api-schema";
 
 let username: string;
 let email: string;
@@ -45,6 +46,9 @@ test("Create/Register User Account", async ({}) => {
 
   const body = await response.json();
   expect(body.message).toBe("User created!");
+  // verify respone schema
+  const parseResult = signupSchema.safeParse(body);
+  expect(parseResult.success).toBeTruthy(); // Ensure schema is valid
 });
 
 test("Verify user is created", async ({}) => {
@@ -58,4 +62,6 @@ test("Verify user is created", async ({}) => {
 
   const verifyBody = await response.json();
   expect(verifyBody.message).toBe("User exists!");
+  const parseResult = verifyLoginSchema.safeParse(verifyBody);
+  expect(parseResult.success).toBeTruthy(); // E
 });

@@ -12,8 +12,10 @@ jest.setTimeout(60000);
 
 describe("Login flow", function () {
   let driver: WebDriver;
+  let driverMngr: DriverManager;
   // Re-open the hook to perform setup with the same timeout
   beforeAll(async () => {
+     driverMngr = new DriverManager();
     const appPath = path.resolve(__dirname, "..", "app-apk", "TheApp.apk");
     const capabilities = {
       "appium:platformName": "Android",
@@ -25,7 +27,7 @@ describe("Login flow", function () {
     };
     try {
       // Use centralized DriverManager to create the Android driver
-      driver = await DriverManager.createAndroidDriver(capabilities);
+      driver = await driverMngr.createAndroidDriver(capabilities);
       console.log("Driver created via DriverManager");
     } catch (err) {
       console.error("Error creating driver via DriverManager:", err);
@@ -34,7 +36,7 @@ describe("Login flow", function () {
   }, 60000);
 
   afterAll(async () => {
-    await DriverManager.quitDriver(driver);
+    await driverMngr.quitDriver(driver);
   });
 
   test("login should fail", async () => {
